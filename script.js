@@ -24,6 +24,7 @@ let pilotName
 let pilotStatus
 
 function init() {
+   getPlanets()
    cargoMass = document.querySelector('input[name=cargoMass]')
    cargoStatus = document.getElementById('cargoStatus')
    copilotName = document.querySelector('input[name=copilotName]')
@@ -49,23 +50,50 @@ function checkFaultyItems(event, cargo, fuel) {
    }
 
    if (cargo <= 10000 && fuel >= 10000) {
-      console.log('we ready')
       shuttleIsReady(event)
    }
+}
+
+function getPlanets() {
+   fetch('https://handlers.education.launchcode.org/static/planets.json').then((response) => {
+      response.json().then((json) => {
+         const missionTargetDiv = document.getElementById('missionTarget')
+         const planet = json[0]
+         missionTargetDiv.innerHTML += `
+            <h2>Mission Destination</h2>
+            <ol>
+               <li>Name: ${planet.name}</li>
+               <li>Diameter: ${planet.diameter}</li>
+               <li>Star: ${planet.star}</li>
+               <li>Distance from Earth: ${planet.distance}</li>
+               <li>Number of Moons: ${planet.moons}</li>
+            </ol>
+            <img src="${planet.image}">
+         `
+      })
+   })
 }
 
 function shuttleIsReady(event) {
    event.preventDefault()
    cargoStatus.innerHTML = "Cargo mass low enough for launch"
-   copilotStatus.innerHTML = "Co-pilot Ready"
+   copilotStatus.innerHTML = `${copilotName.value} Ready`
    fuelStatus.innerHTML = "Fuel level high enough for launch"
-   pilotStatus.innerHTML = "Pilot Ready"
+   pilotStatus.innerHTML = `${pilotName.value} Ready`
    launchStatus.innerHTML = "Shuttle is ready for launch"
    launchStatus.style.color = 'green'
 }
 
 function shuttleNotReady(event, element, message) {
    event.preventDefault()
+   if (copilotName !== "") {
+      copilotStatus.innerHTML = `${copilotName.value} Ready`
+   }
+
+   if (pilotName !== "") {
+      pilotStatus.innerHTML = `${pilotName.value} Ready`
+   }
+
    faultyItems.style.visibility = 'visible'
    element.innerHTML = message
    launchStatus.innerHTML = "Shuttle not ready for launch"
@@ -73,13 +101,14 @@ function shuttleNotReady(event, element, message) {
 }
 
 function validate(event) {
-   if (cargoMass.value === "" || isNaN(cargoMass.value) ||
-      copilotName.value === "" || fuelLevel.value === "" ||
-      isNaN(fuelLevel.value) || pilotName.value === "") {
+   if (cargoMass.value === "" || copilotName.value === "" ||
+      fuelLevel.value === "" || pilotName.value === "") {
       alert("All fields are required!")
       event.preventDefault()
+   } else if (isNaN(cargoMass.value) || isNaN(fuelLevel.value)) {
+      alert("Enter valid information for each field!")
+      event.preventDefault()
    } else {
-      console.log('here')
       checkFaultyItems(event, Number(cargoMass.value), Number(fuelLevel.value))
    }
 }
