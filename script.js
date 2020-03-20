@@ -58,7 +58,7 @@ function getPlanets() {
    fetch('https://handlers.education.launchcode.org/static/planets.json').then((response) => {
       response.json().then((json) => {
          const missionTargetDiv = document.getElementById('missionTarget')
-         const planet = json[0]
+         const planet = random(json)
          missionTargetDiv.innerHTML += `
             <h2>Mission Destination</h2>
             <ol>
@@ -72,6 +72,10 @@ function getPlanets() {
          `
       })
    })
+}
+
+function random(arr) {
+   return arr[Math.floor(Math.random() * arr.length)]
 }
 
 function shuttleIsReady(event) {
