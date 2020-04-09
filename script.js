@@ -79,7 +79,6 @@ function random(arr) {
 }
 
 function shuttleIsReady(event) {
-   event.preventDefault()
    cargoStatus.innerHTML = "Cargo mass low enough for launch"
    copilotStatus.innerHTML = `${copilotName.value} Ready`
    fuelStatus.innerHTML = "Fuel level high enough for launch"
@@ -89,7 +88,6 @@ function shuttleIsReady(event) {
 }
 
 function shuttleNotReady(event, element, message) {
-   event.preventDefault()
    if (copilotName !== "") {
       copilotStatus.innerHTML = `${copilotName.value} Ready`
    }
@@ -105,13 +103,12 @@ function shuttleNotReady(event, element, message) {
 }
 
 function validate(event) {
+   event.preventDefault()
    if (cargoMass.value === "" || copilotName.value === "" ||
       fuelLevel.value === "" || pilotName.value === "") {
       alert("All fields are required!")
-      event.preventDefault()
    } else if (isNaN(cargoMass.value) || isNaN(fuelLevel.value)) {
       alert("Enter valid information for each field!")
-      event.preventDefault()
    } else {
       checkFaultyItems(event, Number(cargoMass.value), Number(fuelLevel.value))
    }
